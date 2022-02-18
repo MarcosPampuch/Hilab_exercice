@@ -10,7 +10,7 @@ import os
 import json
 import sys
 import pandas as pd
-sys.path.append(r"D:\Users\Marcos\Documents\teste\Exercice_Hilab")
+sys.path.append("/home/marcos/project_Hilab")
 #from keys import api_key, api_secret_key, bearer_token
 
 # To set your enviornment variables in your terminal run the following line:
@@ -103,7 +103,6 @@ def get_stream(set):
 #            print(json.dumps(json_response, indent=4, sort_keys=True))
             ### Creating Dataframe with data
             df_nested = pd.json_normalize(json_response, record_path =['matching_rules'], meta=[['data','text'], ['data','id'],['data', 'created_at']])
-            print(df_nested)
 #            print(df_nested_list)
 #            print(json.dumps(json_response, indent=4, sort_keys=True))
 #                result = json.dumps(json_response, indent=4, sort_keys=True)
@@ -113,17 +112,16 @@ def get_stream(set):
             date_hour = date_hour.split(sep='T')
             date_hour[-1] = date_hour[-1].split(sep='.')[0]
             df_nested.loc[0,'data.created_at'] = date_hour[0]
-            df_nested['hour'] = date_hour[0]
+            df_nested['hour'] = date_hour[-1]
+            df_nested = df_nested[['data.id','data.text','tag', 'data.created_at','hour']]
             print(df_nested)
-            return df_nested
             
 
 def main():
     rules = get_rules()
     delete = delete_all_rules(rules)
     set = set_rules(delete)
-    global aux 
-    aux = get_stream(set)
+    get_stream(set)
 
 
 if __name__ == "__main__":
