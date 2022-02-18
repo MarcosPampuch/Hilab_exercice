@@ -114,8 +114,7 @@ def get_stream(set):
             df_nested.loc[0,'data.created_at'] = date_hour[0]
             df_nested['hour'] = date_hour[-1]
             df_nested = df_nested[['data.id','data.text','tag', 'data.created_at','hour']]
-            print(df_nested)
-            
+    
 
 def main():
     rules = get_rules()
