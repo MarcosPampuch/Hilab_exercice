@@ -15,7 +15,8 @@ sys.path.append(r"D:\Users\Marcos\Documents\teste\Exercice_Hilab")
 
 # To set your enviornment variables in your terminal run the following line:
 #export 'BEARER_TOKEN'='AAAAAAAAAAAAAAAAAAAAAD9pZQEAAAAAltf9rkm8GWMJ52SHf5tjRk8rKRo%3Ds0aQ4HxEkj3it3edkr5v6Q2k1LkTFj2zA0D6fQetzCHz9cNNDh'
-bearer_token= os.environ.get("BEARER_TOKEN")
+#bearer_token= os.environ.get("BEARER_TOKEN")
+bearer_token = 'AAAAAAAAAAAAAAAAAAAAAD9pZQEAAAAAltf9rkm8GWMJ52SHf5tjRk8rKRo%3Ds0aQ4HxEkj3it3edkr5v6Q2k1LkTFj2zA0D6fQetzCHz9cNNDh'
 #print(bearer_token)
 
 def bearer_oauth(r):
@@ -86,9 +87,8 @@ def set_rules(delete):
 def get_stream(set):
     response = requests.get(
 #        "https://api.twitter.com/2/tweets/search/stream", auth=bearer_oauth, stream=True,
-        "https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at&expansions=author_id", 
-        auth=bearer_oauth, stream=True,
-    )
+        "https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at", 
+        auth=bearer_oauth, stream=True)
     print(response.status_code)
     if response.status_code != 200:
         raise Exception(
@@ -100,19 +100,30 @@ def get_stream(set):
     for response_line in response.iter_lines():
         if response_line:
             json_response = json.loads(response_line)
-            #df_nested_list = pd.json_normalize(json_response, record_path =['matching_rules'], meta=[['data']], errors='ignore', meta_prefix='meta-', record_prefix='student-')
-            #print(df_nested_list)
-            print(json.dumps(json_response, indent=4, sort_keys=True))
+#            print(json.dumps(json_response, indent=4, sort_keys=True))
+            ### Creating Dataframe with data
+            df_nested = pd.json_normalize(json_response, record_path =['matching_rules'], meta=[['data','text'], ['data','id'],['data', 'created_at']])
+            print(df_nested)
+#            print(df_nested_list)
+#            print(json.dumps(json_response, indent=4, sort_keys=True))
 #                result = json.dumps(json_response, indent=4, sort_keys=True)
 #                json.dump(result, f, ensure_ascii=False)
-            print("\n#############FUNC GET STREAM#########\n")
-
+            ## Creating list with future values of columns DATE and HOUR
+            date_hour = df_nested.loc[0, 'data.created_at']
+            date_hour = date_hour.split(sep='T')
+            date_hour[-1] = date_hour[-1].split(sep='.')[0]
+            df_nested.loc[0,'data.created_at'] = date_hour[0]
+            df_nested['hour'] = date_hour[0]
+            print(df_nested)
+            return df_nested
+            
 
 def main():
     rules = get_rules()
     delete = delete_all_rules(rules)
     set = set_rules(delete)
-    get_stream(set)
+    global aux 
+    aux = get_stream(set)
 
 
 if __name__ == "__main__":
