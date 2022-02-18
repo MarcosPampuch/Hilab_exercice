@@ -11,6 +11,14 @@ import json
 import sys
 import pandas as pd
 sys.path.append("/home/marcos/project_Hilab")
+from Database import Database
+
+host = 'localhost'
+username = 'maco'
+password = 'Pampuch1998'
+database = 'Tweets'
+table = 'table_tweets'
+
 #from keys import api_key, api_secret_key, bearer_token
 
 # To set your enviornment variables in your terminal run the following line:
@@ -96,7 +104,8 @@ def get_stream(set):
                 response.status_code, response.text
             )
         )
-#    with open('sample.json', 'w', encoding='utf-8') as f:        
+    
+    connection = Database(database, host, username, password)
     for response_line in response.iter_lines():
         if response_line:
             json_response = json.loads(response_line)
@@ -114,6 +123,9 @@ def get_stream(set):
             df_nested.loc[0,'data.created_at'] = date_hour[0]
             df_nested['hour'] = date_hour[-1]
             df_nested = df_nested[['data.id','data.text','tag', 'data.created_at','hour']]
+            connection.send_to_database(df_nested, table)            
+            
+            
     
 
 def main():

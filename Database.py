@@ -64,22 +64,22 @@ class Database():
         self.list_chunks = list_chunks
         
         auxi_query = "INSERT INTO %s VALUES "%self.table
-        fill_query = auxi_query + "(%s, %s, %s, %s, %s, %s, %s)"
+        fill_query = auxi_query + "(%s, %s, %s, %s, %s)"
         
-        if self.list_chunks != None:
-            self.chunk_size = len(list_chunks)
-            for i in range(self.chunk_size):
-                self.cursor.executemany(fill_query, self.list_chunks[i])
-                self.connection.commit()
-                print("\nchunk %d sent!\n"%i)
-        else:
-            self.l_tuples = list(self.dataframe.itertuples(index=False, name=None))
-            self.cursor.executemany(fill_query, self.l_tuples)
-            self.connection.commit()
+#        if self.list_chunks != None:
+#            self.chunk_size = len(list_chunks)
+#            for i in range(self.chunk_size):
+#                self.cursor.executemany(fill_query, self.list_chunks[i])
+#                self.connection.commit()
+#                print("\nchunk %d sent!\n"%i)
+#        else:
+        self.l_tuples = list(self.dataframe.itertuples(index=False, name=None))
+        self.cursor.execute(fill_query, self.l_tuples[0])
+        self.connection.commit()
             
         print("\nData sent to table %s\n"%(self.table))
         
-        self.connection.close()
+        #self.connection.close()
         
 ## Download and unzip file from url
 def download_unzip(url, path_to_zip_file, directory_to_extract_to): 
