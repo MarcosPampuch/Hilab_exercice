@@ -93,13 +93,13 @@ def get_stream(set):
                 response.status_code, response.text
             )
         )
-    with open('sample.json', 'w', encoding='utf-8') as f:        
+#    with open('sample.json', 'w', encoding='utf-8') as f:        
         for response_line in response.iter_lines():
             if response_line:
                 json_response = json.loads(response_line)
-#               print(json.dumps(json_response, indent=4, sort_keys=True))
-                result = json.dumps(json_response, indent=4, sort_keys=True)
-                json.dump(result, f, ensure_ascii=False)
+                print(json.dumps(json_response, indent=4, sort_keys=True))
+#                result = json.dumps(json_response, indent=4, sort_keys=True)
+#                json.dump(result, f, ensure_ascii=False)
                 print("\n#############FUNC GET STREAM#########\n")
 
 
