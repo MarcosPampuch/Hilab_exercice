@@ -9,6 +9,7 @@ import requests
 import os
 import json
 import sys
+import pandas as pd
 sys.path.append(r"D:\Users\Marcos\Documents\teste\Exercice_Hilab")
 #from keys import api_key, api_secret_key, bearer_token
 
@@ -84,7 +85,9 @@ def set_rules(delete):
 
 def get_stream(set):
     response = requests.get(
-        "https://api.twitter.com/2/tweets/search/stream", auth=bearer_oauth, stream=True,
+#        "https://api.twitter.com/2/tweets/search/stream", auth=bearer_oauth, stream=True,
+        "https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at&expansions=author_id", 
+        auth=bearer_oauth, stream=True,
     )
     print(response.status_code)
     if response.status_code != 200:
@@ -97,6 +100,8 @@ def get_stream(set):
     for response_line in response.iter_lines():
         if response_line:
             json_response = json.loads(response_line)
+            #df_nested_list = pd.json_normalize(json_response, record_path =['matching_rules'], meta=[['data']], errors='ignore', meta_prefix='meta-', record_prefix='student-')
+            #print(df_nested_list)
             print(json.dumps(json_response, indent=4, sort_keys=True))
 #                result = json.dumps(json_response, indent=4, sort_keys=True)
 #                json.dump(result, f, ensure_ascii=False)
