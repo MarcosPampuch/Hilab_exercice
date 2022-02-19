@@ -7,6 +7,8 @@ import wget
 import zipfile
 import os
 
+sys.path.append("/home/marcos/project_Hilab")
+
 class Database():
     def __init__(self, database, host, username, password):
         
@@ -38,24 +40,6 @@ class Database():
         self.connection.commit()
         print("\nTable %s empty!\n"%self.table)
         
-    ## Create the chunks of data if needed
-    def create_chunks(self, dataframe):
-        self.dataframe = dataframe
-        l_tuples = list(dataframe.itertuples(index=False, name=None))
-        n_rows = len(dataframe)
-        
-        chunk_size = 1000000;
-        chunks = (n_rows//chunk_size)
-        rest = (n_rows%chunk_size)
-        
-        
-        list_chunks = [ l_tuples[i : i + chunk_size] for i in range(0, chunks*chunk_size, chunk_size)]
-        list_chunks.append(l_tuples[chunks*chunk_size : chunks*chunk_size+rest]) 
-    
-        print("%d chunks created"%len(list_chunks))
-    
-        return list_chunks
-        
     ## Send data from dataframe to database
     def send_to_database(self, dataframe, table, list_chunks = None): ## Upload Pandas dataframe to table chose
         
@@ -65,19 +49,13 @@ class Database():
         
         auxi_query = "INSERT INTO %s VALUES "%self.table
         fill_query = auxi_query + "(%s, %s, %s, %s, %s)"
-        
-#        if self.list_chunks != None:
-#            self.chunk_size = len(list_chunks)
-#            for i in range(self.chunk_size):
-#                self.cursor.executemany(fill_query, self.list_chunks[i])
-#                self.connection.commit()
-#                print("\nchunk %d sent!\n"%i)
-#        else:
+
         self.l_tuples = list(self.dataframe.itertuples(index=False, name=None))
         self.cursor.execute(fill_query, self.l_tuples[0])
         self.connection.commit()
             
         print("\nData sent to table %s\n"%(self.table))
+        
         
         #self.connection.close()
         

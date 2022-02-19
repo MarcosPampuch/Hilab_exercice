@@ -17,7 +17,7 @@ host = 'localhost'
 username = 'maco'
 password = 'Pampuch1998'
 database = 'Tweets'
-table = 'table_tweets'
+#table = 'table_tweets'
 
 #from keys import api_key, api_secret_key, bearer_token
 
@@ -105,28 +105,35 @@ def get_stream(set):
             )
         )
     
+    ## Oppening connection with database server
     connection = Database(database, host, username, password)
+    
     for response_line in response.iter_lines():
         if response_line:
             json_response = json.loads(response_line)
-#            print(json.dumps(json_response, indent=4, sort_keys=True))
-            ### Creating Dataframe with data
+
+            ### Creating Dataframe with JSON object
             df_nested = pd.json_normalize(json_response, record_path =['matching_rules'], meta=[['data','text'], ['data','id'],['data', 'created_at']])
-#            print(df_nested_list)
-#            print(json.dumps(json_response, indent=4, sort_keys=True))
-#                result = json.dumps(json_response, indent=4, sort_keys=True)
-#                json.dump(result, f, ensure_ascii=False)
-            ## Creating list with future values of columns DATE and HOUR
+
+            ## Creating columns creation_date and creation_hour
             date_hour = df_nested.loc[0, 'data.created_at']
             date_hour = date_hour.split(sep='T')
             date_hour[-1] = date_hour[-1].split(sep='.')[0]
             df_nested.loc[0,'data.created_at'] = date_hour[0]
             df_nested['hour'] = date_hour[-1]
-            df_nested = df_nested[['data.id','data.text','tag', 'data.created_at','hour']]
-            connection.send_to_database(df_nested, table)            
+            df_nested = df_nested[['data.id','data.text', 'data.created_at','hour', 'tag']]
+
+            if df_nested.loc[0, 'tag'] == 'Soccer rule':
+                connection.send_to_database(df_nested, 'table_Soccer')
+                print('sent to table table_Soccer\n')
+                
+            elif df_nested.loc[0, 'tag'] == 'Health rule':
+                connection.send_to_database(df_nested, 'table_Health')
+                print('sent to table table_Health\n')     
+            else:
+                connection.send_to_database(df_nested, 'table_Food')
+                print('sent to table table_Food\n')
             
-            
-    
 
 def main():
     rules = get_rules()
