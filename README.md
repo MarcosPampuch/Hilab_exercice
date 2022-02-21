@@ -17,7 +17,7 @@ The main versions used to run the code are:
 
 To stablish the stream connection and start importing data to database: execute the Python file **main.py**;
 
-To start the queries on the database: execute the Python file **main_queries.py**.
+To run the queries: execute the Python file **main_queries.py**.
 
 ## STREAM
 
