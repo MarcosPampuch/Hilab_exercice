@@ -11,9 +11,9 @@ sys.path.append("/home/marcos/project_Hilab")
 from stream_sql import StreamSQL
 
 database = 'Tweets'
-host = 'localhost'
-username = 'maco'
-password = 'Pampuch1998'
+host = '192.168.15.66'
+username = 'm_remote'
+password = 'Pampuch1'
 
 def main():
     stream = StreamSQL()

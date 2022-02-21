@@ -7,8 +7,6 @@ import wget
 import zipfile
 import os
 
-sys.path.append("/home/marcos/project_Hilab")
-
 class Database():
     def __init__(self, database, host, username, password):
         

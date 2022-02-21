@@ -72,14 +72,14 @@ def min_max():
 #    return MIN_MAX_Food, MIN_MAX_Soccer, MIN_MAX_Health
 
     print("Tag Comida")
-    print('Horario Tweet mais antigo: %s'%MIN_MAX_Food[0][0])
-    print('Horario Tweet mais recente: %s'%MIN_MAX_Food[1][0])
+    print('Horario Tweet mais recente: %s'%MIN_MAX_Food[0][0])
+    print('Horario Tweet mais antigo: %s'%MIN_MAX_Food[1][0])
     print("\nTag Futebol")
-    print('Horario Tweet mais antigo: %s'%MIN_MAX_Soccer[0][0])
-    print('Horario Tweet mais recente: %s'%MIN_MAX_Soccer[1][0])
+    print('Horario Tweet mais recente: %s'%MIN_MAX_Soccer[0][0])
+    print('Horario Tweet mais antigo: %s'%MIN_MAX_Soccer[1][0])
     print("\nTag Saude")
-    print('Horario Tweet mais antigo: %s'%MIN_MAX_Health[0][0])
-    print('Horario Tweet mais recente: %s'%MIN_MAX_Health[1][0])
+    print('Horario Tweet mais recente: %s'%MIN_MAX_Health[0][0])
+    print('Horario Tweet mais antigo: %s'%MIN_MAX_Health[1][0])
 
 print('(a) Qual o horário do tweet mais antigo e do mais recente para cada regra?\n')
 
