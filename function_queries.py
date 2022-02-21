@@ -25,7 +25,6 @@ def min_max():
                     FROM table_Food 
                     WHERE creation_date = (SELECT MAX(creation_date) 
                                             FROM table_Food) 
-                    GROUP BY creation_date 
                     UNION 
                     SELECT DATE_FORMAT(MIN(creation_hour), '%r') AS Food 
                     FROM table_Food 
@@ -43,7 +42,6 @@ def min_max():
                     FROM table_Soccer
                     WHERE creation_date = (SELECT MAX(creation_date) 
                                             FROM table_Soccer) 
-                    GROUP BY creation_date 
                     UNION 
                     SELECT DATE_FORMAT(MIN(creation_hour), '%r') AS Soccer 
                     FROM table_Soccer
@@ -56,7 +54,6 @@ def min_max():
                     FROM table_Health
                     WHERE creation_date = (SELECT MAX(creation_date) 
                                             FROM table_Health) 
-                    GROUP BY creation_date 
                     UNION 
                     SELECT DATE_FORMAT(MIN(creation_hour), '%r') AS Health 
                     FROM table_Health
@@ -181,13 +178,50 @@ def periods():
     
 print('\n\n(b) Qual o período do dia em que cada regra se torna mais frequente?\n')
 periods()  
+
+def string_size():
     
+    query_Food = """SELECT id, CHAR_LENGTH(text) AS Length
+                FROM table_Food 
+                WHERE CHAR_LENGTH(text) = (SELECT MAX(CHA) AS Number_MAX 
+                                          FROM (SELECT CHAR_LENGTH(text) AS 'CHA' 
+                                                FROM table_Food) AS tt1) 
+                                            OR CHAR_LENGTH(text) = (SELECT MIN(CHA) AS Number_MIN 
+                                                FROM (SELECT CHAR_LENGTH(text) AS 'CHA' 
+                                                      FROM table_Food) AS tt2) ORDER BY Length;
+                """
+    query_Soccer = """SELECT id, CHAR_LENGTH(text) AS Length
+                FROM table_Soccer 
+                WHERE CHAR_LENGTH(text) = (SELECT MAX(CHA) AS Number_MAX 
+                                          FROM (SELECT CHAR_LENGTH(text) AS 'CHA' 
+                                                FROM table_Soccer) AS tt1) 
+                                            OR CHAR_LENGTH(text) = (SELECT MIN(CHA) AS Number_MIN 
+                                                FROM (SELECT CHAR_LENGTH(text) AS 'CHA' 
+                                                      FROM table_Soccer) AS tt2) ORDER BY Length;
+                """
+    query_Health = """SELECT id, CHAR_LENGTH(text) AS Length
+                FROM table_Health 
+                WHERE CHAR_LENGTH(text) = (SELECT MAX(CHA) AS Number_MAX 
+                                          FROM (SELECT CHAR_LENGTH(text) AS 'CHA' 
+                                                FROM table_Health) AS tt1) 
+                                            OR CHAR_LENGTH(text) = (SELECT MIN(CHA) AS Number_MIN 
+                                                FROM (SELECT CHAR_LENGTH(text) AS 'CHA' 
+                                                      FROM table_Health) AS tt2) ORDER BY Length;
+                """
+                                  
+    Period_Food = connection.query_database(query_Food)
+    Period_Soccer = connection.query_database(query_Soccer)
+    Period_Health = connection.query_database(query_Health)
     
+    print('O Tweet mais curto da table Food tem %d caracteres (id: %s)'%(Period_Food[0][1],Period_Food[0][0]))
+    print('O Tweet mais longo da table Food tem %d caracteres (id: %s)\n'%(Period_Food[1][1],Period_Food[1][0]))
+    print('O Tweet mais curto da table Soccer tem %d caracteres (id: %s)'%(Period_Soccer[0][1],Period_Soccer[0][0]))
+    print('O Tweet mais longo da table Soccer tem %d caracteres (id: %s)\n'%(Period_Soccer[1][1],Period_Soccer[1][0]))
+    print('O Tweet mais curto da table Health tem %d caracteres (id: %s)'%(Period_Health[0][1],Period_Health[0][0]))
+    print('O Tweet mais longo da table Health tem %d caracteres (id: %s)\n'%(Period_Health[1][1],Period_Health[1][0]))
     
-    
-    
-    
-    
+print('\n\n(c) Qual o tweet mais longo em número de caracteres para cada regra? E o mais curto?\n')
+string_size() 
     
     
     
