@@ -23,13 +23,13 @@ To run the queries: execute the Python file **main_queries.py**.
 
 To stablish a connection with Twitter's API, the file **stream_sql.py** has a serie of steps which are represented by methods.
 
-Those steps are:
+These steps are:
 
   1. Fetch the actual rules stored on the last Stream;
   
   2. Delete those rules;
   
-  3. Set the rules desired by de user;
+  3. Set the rules desired by the user;
   
   4. Connect to the stream to receive the data;
   
@@ -37,9 +37,9 @@ Those steps are:
  
  ## SQL Storage
  
- After open the stream, all data is sent to a MySQL remote database called **Tweets** where each keyword has its own table.
+ After open the stream, all data is automatically sent to a MySQL remote database called **Tweets** where each keyword has its own table.
  
- The methods used to open and store the data in the remote server are on the **database.py** file.
+ The methods to open and store the data in the remote server are on the **database.py** file.
  
  ## Queries 
  
@@ -51,7 +51,7 @@ Those steps are:
   3. Qual o tweet mais longo em número de caracteres para cada regra? E o mais
 curto?
  
- To execute de queries, the methods of database.py are also used.
+ To execute the queries, some methods of database.py are also used.
  
  ## Observations
  
