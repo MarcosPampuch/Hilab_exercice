@@ -8,15 +8,10 @@ Created on Sat Feb 19 01:04:09 2022
 import sys
 import mysql.connector
 
-sys.path.append("/home/marcos/project_Hilab")
 from database import Database
+from credentials import credentials
 
-database = 'Tweets'
-host = '192.168.15.66'
-username = 'm_remote'
-password = 'Pampuch1'
-
-connection = Database(database, host, username, password)
+connection = Database(**credentials)
 
 # a) Qual o horário do tweet mais antigo e do mais recente para cada regra?
 def min_max():
@@ -63,13 +58,10 @@ def min_max():
                     """   
 
     
-            
+    ## Executing queries in MySQL database
     MIN_MAX_Food = connection.query_database(query_Food)  
     MIN_MAX_Soccer = connection.query_database(query_Soccer)
     MIN_MAX_Health = connection.query_database(query_Health)      
-#    MIN_MAX_Soccer = connection.query_database(Query_Soccer)   
-#    MIN_MAX_Health = connection.query_database(Query_Health)   
-#    return MIN_MAX_Food, MIN_MAX_Soccer, MIN_MAX_Health
 
     print("Tag Comida")
     print('Horario Tweet mais recente: %s'%MIN_MAX_Food[0][0])
@@ -80,10 +72,6 @@ def min_max():
     print("\nTag Saude")
     print('Horario Tweet mais recente: %s'%MIN_MAX_Health[0][0])
     print('Horario Tweet mais antigo: %s'%MIN_MAX_Health[1][0])
-
-print('(a) Qual o horário do tweet mais antigo e do mais recente para cada regra?\n')
-
-min_max()
 
 
 # b) Qual o período do dia em que cada regra se torna mais frequente?   
@@ -167,7 +155,7 @@ def periods():
                           ORDER BY Qty_Period DESC LIMIT 1;
                 """
                 
-                
+    ## Executing queries in MySQL database
     Period_Food = connection.query_database(query_Food)
     Period_Soccer = connection.query_database(query_Soccer)
     Period_Health = connection.query_database(query_Health)
@@ -176,10 +164,8 @@ def periods():
     print('O periodo do dia para a tag Futebol eh: a %s com %i tweets\n'%(Period_Soccer[0][1],Period_Soccer[0][0]))
     print('O periodo do dia para a tag Saude eh: a %s com %i tweets'%(Period_Health[0][1],Period_Health[0][0]))
     
-print('\n\n(b) Qual o período do dia em que cada regra se torna mais frequente?\n')
-periods()  
 
-def string_size():
+def string_sizes():
     
     query_Food = """SELECT id, CHAR_LENGTH(text) AS Length
                 FROM table_Food 
@@ -208,7 +194,8 @@ def string_size():
                                                 FROM (SELECT CHAR_LENGTH(text) AS 'CHA' 
                                                       FROM table_Health) AS tt2) ORDER BY Length;
                 """
-                                  
+                
+    ## Executing queries in MySQL database                              
     Period_Food = connection.query_database(query_Food)
     Period_Soccer = connection.query_database(query_Soccer)
     Period_Health = connection.query_database(query_Health)
@@ -220,15 +207,10 @@ def string_size():
     print('O Tweet mais curto da table Health tem %d caracteres (id: %s)'%(Period_Health[0][1],Period_Health[0][0]))
     print('O Tweet mais longo da table Health tem %d caracteres (id: %s)\n'%(Period_Health[1][1],Period_Health[1][0]))
     
-print('\n\n(c) Qual o tweet mais longo em número de caracteres para cada regra? E o mais curto?\n')
-string_size() 
+
+######################################################################################################################
     
-    
-    
-    
-    
-    
-    
+
     
     
     
