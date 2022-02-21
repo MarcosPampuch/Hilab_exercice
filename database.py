@@ -56,7 +56,12 @@ class Database():
             
         print("\nData sent to table %s\n"%(self.table))
         
+    def query_database(self, query):
         
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+        return records
+#        self.connection.commit()
         #self.connection.close()
         
 ## Download and unzip file from url
