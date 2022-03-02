@@ -56,7 +56,7 @@ curto?
  ## Observations
  
  - All the tweets are been stored in a timezone three hours later than here in Brazil.
- - The key credentials to access the Stream and the server credentials to login are stored in **credentials.py** file.
+ - The key credentials to access the Stream and the server credentials to login were excluded to prevent bad usage
  - More info about Twitter's API can be found [here](https://developer.twitter.com/en/docs/twitter-api/tweets/filtered-stream/introduction)
 
 
