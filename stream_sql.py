@@ -11,6 +11,7 @@ import json
 import pandas as pd
 from database import Database
 import requests
+from pymongo import MongoClient
 
 class StreamSQL():
     def __init__(self, bearer_token):
@@ -89,7 +90,7 @@ class StreamSQL():
         return dataframe[['data.id','data.text', 'data.created_at','hour', 'tag']]
         
     ## Open Stream connection and send to SQL database
-    def stream_sql(self, set, database, host, username, password):
+    def stream_sql(self, set):
         response = requests.get(
             "https://api.twitter.com/2/tweets/search/stream?tweet.fields=created_at", 
             auth=self.bearer_oauth, stream=True)
@@ -102,29 +103,54 @@ class StreamSQL():
         print("\nStream connection stablished!\n")
         
         
-        connection = Database(database, host, username, password)
+        try:
+            conn = MongoClient()
+            print("Connected successfully!!!")
+        except:  
+            print("Could not connect to MongoDB")
+            
+        db = conn.db_test
+        collection = db.col_test
         
         for response_line in response.iter_lines():
             if response_line:
                 json_response = json.loads(response_line)
     
-                ### Creating Dataframe with JSON object
-                json_df = pd.json_normalize(json_response, record_path =['matching_rules'], meta=[['data','text'], ['data','id'],['data', 'created_at']])
-    
-                ## Adjusting coloumns
-                tweet_df = self.column_adjust(json_df)
+#                ### Creating Dataframe with JSON object
+#                json_df = pd.json_normalize(json_response, record_path =['matching_rules'], meta=[['data','text'], ['data','id'],['data', 'created_at']])
+#    
+#                ## Adjusting coloumns
+#                tweet_df = self.column_adjust(json_df)
+#                
+#                ## send tweet to table table_Soccer
+#                if tweet_df.loc[0, 'tag'] == 'Soccer rule':
+#                    connection.send_to_database(tweet_df, 'table_Soccer')
+#                    
+#                ## send tweet to table table_Health
+#                elif tweet_df.loc[0, 'tag'] == 'Health rule':
+#                    connection.send_to_database(tweet_df, 'table_Health')
+#    
+#                ## send tweet to table table_Food
+#                else:
+#                    connection.send_to_database(tweet_df, 'table_Food')
                 
+                ### Creating Dataframe with JSON object
+                print(json_response["data"]["text"])
+                
+                ## Adjusting coloumns
+                collection.insert_one(json_response)
+
                 ## send tweet to table table_Soccer
-                if tweet_df.loc[0, 'tag'] == 'Soccer rule':
-                    connection.send_to_database(tweet_df, 'table_Soccer')
-                    
-                ## send tweet to table table_Health
-                elif tweet_df.loc[0, 'tag'] == 'Health rule':
-                    connection.send_to_database(tweet_df, 'table_Health')
-    
-                ## send tweet to table table_Food
-                else:
-                    connection.send_to_database(tweet_df, 'table_Food')
+#                if tweet_df.loc[0, 'tag'] == 'Soccer rule':
+#                    connection.send_to_database(tweet_df, 'table_Soccer')
+#                    
+#                ## send tweet to table table_Health
+#                elif tweet_df.loc[0, 'tag'] == 'Health rule':
+#                    connection.send_to_database(tweet_df, 'table_Health')
+#    
+#                ## send tweet to table table_Food
+#                else:
+#                    connection.send_to_database(tweet_df, 'table_Food')
 
                     
                 

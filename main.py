@@ -15,7 +15,7 @@ def main():
     rules = stream.get_rules_stream()
     delete = stream.delete_rules_stream(rules)
     set = stream.set_rules_stream(delete)
-    stream.stream_sql(set, **credentials)
+    stream.stream_sql(set)
 
 if __name__ == "__main__":
     main()
