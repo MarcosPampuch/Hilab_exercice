@@ -9,8 +9,9 @@ Created on Thu Feb 17 23:34:03 2022
 import sys
 import json
 import pandas as pd
-from database import Database
+# from database import Database
 import requests
+from datetime import datetime
 from pymongo import MongoClient
 
 class StreamSQL():
@@ -109,8 +110,10 @@ class StreamSQL():
         except:  
             print("Could not connect to MongoDB")
             
-        db = conn.db_test
-        collection = db.col_test
+        db = conn.Twitter_DB
+        collectionH = db.Health
+        collectionF = db.Food
+        collectionS = db.Soccer
         
         for response_line in response.iter_lines():
             if response_line:
@@ -135,22 +138,44 @@ class StreamSQL():
 #                    connection.send_to_database(tweet_df, 'table_Food')
                 
                 ### Creating Dataframe with JSON object
-                print(json_response["data"]["text"])
+                # print(json_response["data"]["tag"])
+                list_match = list(json_response["matching_rules"][0].items())
                 
-                ## Adjusting coloumns
-                collection.insert_one(json_response)
+                final_dict = json_response["data"]|{list_match[1][0]:list_match[1][1]}           
 
-                ## send tweet to table table_Soccer
-#                if tweet_df.loc[0, 'tag'] == 'Soccer rule':
-#                    connection.send_to_database(tweet_df, 'table_Soccer')
-#                    
-#                ## send tweet to table table_Health
-#                elif tweet_df.loc[0, 'tag'] == 'Health rule':
-#                    connection.send_to_database(tweet_df, 'table_Health')
-#    
-#                ## send tweet to table table_Food
-#                else:
-#                    connection.send_to_database(tweet_df, 'table_Food')
+                list_date = final_dict["created_at"].split("T")
+                
+                final_dict["Date"] =  final_dict.pop("created_at")
+
+                final_dict["Date"] = list_date[0]
+                final_dict["Hour"] = list_date[1].split(".")[0]
+          
+                time = datetime.strptime(final_dict["Hour"], "%H:%M:%S")
+
+                if time >= datetime.strptime("00:00:00", "%H:%M:%S") and time <= datetime.strptime("05:59:59", "%H:%M:%S"):
+                    final_dict = final_dict|{"Period" : "Dawn"}
+                elif time >= datetime.strptime("06:00:00", "%H:%M:%S") and time <= datetime.strptime("11:59:59", "%H:%M:%S"):
+                    final_dict = final_dict|{"Period" : "Morining"}
+                elif time >= datetime.strptime("12:00:00", "%H:%M:%S") and time <= datetime.strptime("17:59:59", "%H:%M:%S"):
+                    final_dict = final_dict|{"Period" : "Evenning"}
+                else:
+                    final_dict = final_dict|{"Period" : "Night"}
+
+                print(final_dict["tag"]) 
+
+                # Adjusting coloumns
+
+                # send tweet to table table_Soccer
+                if final_dict["tag"] == 'Soccer rule':
+                    collectionS.insert_one(final_dict)
+                    
+                ## send tweet to table table_Health
+                elif final_dict["tag"] == 'Health rule':
+                  collectionH.insert_one(final_dict)
+    
+                ## send tweet to table table_Food
+                else:
+                    collectionF.insert_one(final_dict)
 
                     
                 
