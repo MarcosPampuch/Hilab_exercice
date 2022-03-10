@@ -1,4 +1,4 @@
-# Hilab_exercice
+# Pipeline from API to SQL database
 "Desafio Twitter Stream"
 
 This git was made to present a code to extract and store data from Twitter's filter API to MySQL remote server.
